@@ -46,7 +46,7 @@ const MessageInput = () => {
         fileInputRef.current.value = '';
       }
     } catch (error) { 
-      toast.error('Failed to send message ' + error.message);
+      toast.error('Image has to be less than 50 kb');
     }   
 
   }

@@ -6,7 +6,7 @@ import { useAuthStore } from '../store/useAuthStore'
 
 const SignIn = () => {
     const [showPassword, setShowPassword] = useState(false)
-    const { isLogining, signin} = useAuthStore()
+    const { isLoginin, signin} = useAuthStore()
   
   const [formData, SetFormData] = useState({
       username: "",
@@ -68,8 +68,8 @@ const SignIn = () => {
         </button>
     </div>
         
-        <button onClick={submit} className='btn btn-primary w-full mt-5' disabled={isLogining}>
-            {isLogining ? (
+        <button onClick={submit} className='btn btn-primary w-full mt-5' disabled={isLoginin}>
+            {isLoginin ? (
               <>
               <Loader2 className='size-5 animate-spin' />
               Loading...

@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "samvad-app": "file:.."
+  }
+}
