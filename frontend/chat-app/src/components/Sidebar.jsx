@@ -5,9 +5,7 @@ import {Users} from 'lucide-react'
 import { useAuthStore } from '../store/useAuthStore'
 const Sidebar = () => {
   const { getUsers, users, selectedUser, setSelectedUsers, isUsersLoading} = useChatStore()
-
   const { onlineUsers } = useAuthStore()
-
   const [showOnlineOnly, setShowOnlineOnly] = useState(false)
 
   useEffect(() => {
@@ -15,10 +13,8 @@ const Sidebar = () => {
   }, [getUsers])
 
   const filteredUsers = showOnlineOnly ? users.filter((user) => onlineUsers.includes(user._id)) : users;
-
   if(isUsersLoading) return <SidebarSkeleton/>
   
-
   return (
     <aside className='h-full w-20 lg:w-72 border-r border-base-300 flex flex-col transition-all duration-200'> 
     <div className='border-b border-base-300 p-5 w-full'>
@@ -42,6 +38,7 @@ const Sidebar = () => {
       </div>  
 
     <div className='overflow-y-auto py-3 w-full'>
+
     {filteredUsers.sort((a, b) => {
           // Move online users to the top
           const isAOnline = onlineUsers.includes(a._id);
@@ -79,7 +76,8 @@ const Sidebar = () => {
             <div className="hidden lg:block text-left min-w-0">
               <div className="font-medium truncate">{user.username}</div>
               <div className="text-sm text-zinc-400">
-                {onlineUsers.includes(user._id) ? "Online" : "Offline"}
+                {onlineUsers.includes(user._id) ? "Online" : "Offline"} <br />
+
               </div>
             </div>
           </button>
@@ -88,6 +86,7 @@ const Sidebar = () => {
         {filteredUsers.length === 0 && (
           <div className="text-center text-zinc-500 py-4">No online users</div>
         )}
+        
     </div>
     </aside>
   )
