@@ -9,7 +9,8 @@ export const useChatStore = create((set, get) => ({
     selectedUsers: null,
     isUsersLoading: false,
     isMessagesLoading: false,
-    
+    typingStatus: false, // Default status
+    setTypingStatus: (status) => set({ typingStatus: status }),
 
     getUsers: async () =>{
         set({isUsersLoading: true});

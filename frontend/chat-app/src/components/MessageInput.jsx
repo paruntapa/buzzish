@@ -1,14 +1,18 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useChatStore } from '../store/useChatStore';
 import {X, Image, Send} from "lucide-react"
 import toast from 'react-hot-toast';
+import { useAuthStore } from '../store/useAuthStore';
+import { use } from 'react';
 
 const MessageInput = () => {
 
   const [text, setText] = useState('');
   const [imagePreview, setImagePreview] = useState(null);
   const fileInputRef = useRef(null);
-  const { sendMessage } = useChatStore();
+  const { sendMessage, selectedUsers } = useChatStore();
+  const { socket } = useAuthStore();
+  const [isTypingStatus, setIsTypingStatus] = useState(false);
   
 
   const handleImageChange = (e) => {
@@ -38,6 +42,7 @@ const MessageInput = () => {
     if(!text.trim() && !imagePreview) return;
 
     try {
+      setIsTypingStatus(true);
 
       await sendMessage({
 
@@ -50,15 +55,20 @@ const MessageInput = () => {
       setText('');
       setImagePreview();
 
+      socket.emit("typing", {
+        receiverId: selectedUsers._id,
+        isTyping: false, // Notify the receiver that typing has stopped
+    });
+
       if(fileInputRef.current) {
         fileInputRef.current.value = '';
       }
-
     } catch (error) { 
       toast.error('Image has to be less than 50 kb');
     }   
 
   }
+
 
   return (
 
@@ -92,10 +102,20 @@ const MessageInput = () => {
             placeholder="Type a message..."
             value={text}
             onChange={(e) => {
-              setText(e.target.value) 
-              
-          }
-            }
+              const newText = e.target.value;
+              setText(newText);
+              const isTypeStatus = newText.trim() !== '';
+              setIsTypingStatus(isTypeStatus);
+
+            // Emit typing event
+            socket.emit("typing", {
+            receiverId: selectedUsers._id, // Pass the receiver's ID
+            isTyping: e.target.value === '' ? false : true, // Notify the receiver that typing has started
+            });
+
+            console.log(newText);
+
+          }}
           />
           <input
             type="file"
@@ -109,7 +129,8 @@ const MessageInput = () => {
             type="button"
             className={`hidden sm:flex btn btn-circle
                      ${imagePreview ? "text-emerald-500" : "text-zinc-400"}`}
-            onClick={() => fileInputRef.current?.click()}
+            onClick={() => {fileInputRef.current?.click(); }}
+            
           >
             <Image size={20} />
           </button>
