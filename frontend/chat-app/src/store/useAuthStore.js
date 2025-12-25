@@ -17,6 +17,7 @@ export const useAuthStore = create((set, get)=>({
     checkAuth: async ()=>{
         try {
             const res = await axiosInstance.get("/auth/check")
+           
             set({authUser: res.data})
             
             get().connectSocket()
@@ -38,7 +39,7 @@ export const useAuthStore = create((set, get)=>({
 
             get().connectSocket()
         } catch (error) {
-            toast.error(error.response.data.message);
+            toast.error("Server Error", error.response.data.message);
         }finally{
             set({isSigningup: false})
         }
